@@ -1,0 +1,48 @@
+server:
+  port: 8000
+
+spring:
+  config:
+    activate:
+      on-profile: default
+  application:
+    name: apigateway-service
+#  rabbitmq:
+#    host: 127.0.0.1
+#    port: 5672
+#    username: guest
+#    password: guest
+#    listener:
+#      simple:
+#        prefetch: 5
+  cloud:
+    gateway:
+      default-filters:
+        - name: GlobalFilter
+          args:
+            baseMessage: Spring Cloud Gateway Global Filter
+            preLogger: true
+            postLogger: true
+      routes:
+        - id: member-service
+          uri: http://member:8081 # 컨테이너명이 꼭 member여야 함, 내부 포트가 꼭 8081이어야 함
+          predicates:
+            - Path=/member/**
+
+        - id: mcp-service
+          uri: http://mcp:8082 # 컨테이너명이 꼭 mcp여야 함, 내부 포트가 꼭 8082이어야 함
+          predicates:
+            - Path=/mcp/**
+
+        - id: workspace-service
+          uri: http://workspace:8083 # 컨테이너명이 꼭 workspace여야 함, 내부 포트가 꼭 8083이어야 함
+          predicates:
+            - Path=/workspace/**
+#token:
+#  secret: user_token
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: refresh, health, beans, httpexchanges, busrefresh, info, metrics, prometheus
