@@ -15,6 +15,16 @@ spring:
 #    listener:
 #      simple:
 #        prefetch: 5
+  springdoc:
+    swagger-ui:
+      urls:
+        - name: member-service
+          url: /member:8081/swagger-ui/index.html
+        - name: mcp-service
+          url: /mcp:8081/swagger-ui/index.html
+        - name: workspace-service
+          url: /workspace:8081/swagger-ui/index.html
+
   cloud:
     gateway:
       default-filters:
