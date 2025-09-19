@@ -1,4 +1,4 @@
-name: MCP Hub gateway service - Develop Deploy
+name: MCP Hub DEV Reusable Workflows - Develop Deploy
 
 on:
   workflow_call:
@@ -25,7 +25,7 @@ jobs:
         run: |
           SERVICE=${{ inputs.service }}
           TAG=${{ inputs.tag }}
-          IMAGE=${{ secrets.KCR_HOST }}/project/$SERVICE:$TAG
+          IMAGE=${{ secrets.KCR_HOST }}/mcp-hub-backend-dev/$SERVICE:$TAG
 
           echo "Deploying $SERVICE:$TAG"
 
