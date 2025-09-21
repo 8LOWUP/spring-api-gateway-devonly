@@ -1,0 +1,24 @@
+# docker-compose --env-file docker-compose.dev.env up -d
+
+services:
+  mongodb:
+    container_name: mongodb-mcp-market-local
+    image: mongo:latest
+    ports:
+      - target: ${MONGODB_INNER_PORT}
+        published: ${MONGODB_OUTER_PORT}
+        protocol: tcp
+        host_ip: 0.0.0.0
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=${MONGODB_USER}
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGODB_PASSWORD}
+      - MONGO_INITDB_DATABASE=${MONGODB_DATABASE}
+    networks:
+      - mm_dev_network
+    restart: always
+
+networks:
+  mm_dev_network:
+    name: mm_dev_network
+    driver: bridge
+    internal: false
