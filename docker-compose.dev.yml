@@ -3,7 +3,7 @@
 services:
   spring-api-gateway-devonly:
     container_name: gateway-dev-service
-    image: ${KCR_HOST}/project/spring-api-gateway-devonly:latest
+    image: ${KCR_HOST}/mcp-hub-backend-dev/spring-api-gateway-devonly:latest
     ports:
       - 80:8000
     networks:
@@ -11,7 +11,7 @@ services:
 
   mcp-hub-member:
     container_name: mcp-hub-member
-    image: ${KCR_HOST}/project/mcp-hub-member:latest
+    image: ${KCR_HOST}/mcp-hub-backend-dev/mcp-hub-member:latest
     ports:
       - 811:8081
     environment:
@@ -21,7 +21,7 @@ services:
 
   mcp-hub-workspace:
     container_name: mcp-hub-workspace
-    image: ${KCR_HOST}/project/mcp-hub-workspace:latest
+    image: ${KCR_HOST}/mcp-hub-backend-dev/mcp-hub-workspace:latest
     ports:
       - 812:8081
     environment:
@@ -31,7 +31,7 @@ services:
 
   mcp-hub-mcp:
     container_name: mcp-hub-mcp
-    image: ${KCR_HOST}/project/mcp-hub-mcp:latest
+    image: ${KCR_HOST}/mcp-hub-backend-dev/mcp-hub-mcp:latest
     ports:
       - 813:8081
     environment:
@@ -44,7 +44,6 @@ services:
     image: redis:latest
     ports:
       - 6379:6379
-    command: redis-server --requirepass ${REDIS_PASSWORD}
     networks:
       - mm_dev_network
 

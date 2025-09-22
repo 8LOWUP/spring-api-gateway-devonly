@@ -34,12 +34,20 @@ jobs:
           TAG=${{ inputs.tag }}
           IMAGE=${{ secrets.KCR_HOST }}/mcp-hub-backend-dev/$SERVICE:$TAG
 
-          echo "Deploying $SERVICE:$TAG"
+          echo "Re-deploying $SERVICE:$TAG (clean run)"
 
           ssh -o StrictHostKeyChecking=no ubuntu@${{ secrets.EC2_HOST }} "
             cd /app/compose &&
-            KCR_HOST=${{ secrets.KCR_HOST }} \
-            docker-compose --env-file docker-compose.dev.env pull \$SERVICE &&
-            KCR_HOST=${{ secrets.KCR_HOST }} \
-            docker-compose --env-file docker-compose.dev.env up -d --no-deps \$SERVICE
+            echo 'Stopping and removing old container...' &&
+            docker-compose rm -sf \$SERVICE || true &&
+
+            echo 'Removing old image...' &&
+            docker rmi -f \$IMAGE || true &&
+
+            echo 'Pulling new image...' &&
+            KCR_HOST=${{ secrets.KCR_HOST }} docker-compose --env-file docker-compose.dev.env pull \$SERVICE &&
+
+            echo 'Starting new container...' &&
+            KCR_HOST=${{ secrets.KCR_HOST }} docker-compose --env-file docker-compose.dev.env up -d --no-deps \$SERVICE
           "
+      
