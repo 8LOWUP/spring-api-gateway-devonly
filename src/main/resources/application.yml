@@ -19,9 +19,9 @@ spring:
     swagger-ui:
       urls:
         - name: member-service
-          url: /member:8081/swagger-ui/index.html
+          url: /member:8080/swagger-ui/index.html
         - name: mcp-service
-          url: /mcp:8081/swagger-ui/index.html
+          url: /mcp:8080/swagger-ui/index.html
         - name: workspace-service
           url: /workspace:8081/swagger-ui/index.html
 
@@ -35,17 +35,17 @@ spring:
             postLogger: true
       routes:
         - id: member-service
-          uri: http://mcp-hub-member:8081 # 컨테이너명이 꼭 member여야 함, 내부 포트가 꼭 8081이어야 함
+          uri: http://mcp-hub-member:8080 # 컨테이너명이 꼭 member여야 함, 내부 포트가 꼭 8081이어야 함
           predicates:
             - Path=/member/**
 
         - id: mcp-service
-          uri: http://mcp-hub-mcp:8081 # 컨테이너명이 꼭 mcp여야 함, 내부 포트가 꼭 8081이어야 함
+          uri: http://mcp-hub-mcp:8080 # 컨테이너명이 꼭 mcp여야 함, 내부 포트가 꼭 8081이어야 함
           predicates:
             - Path=/mcp/**
 
         - id: workspace-service
-          uri: http://mcp-hub-workspace:8081 # 컨테이너명이 꼭 workspace여야 함, 내부 포트가 꼭 8081이어야 함
+          uri: http://mcp-hub-workspace:8080 # 컨테이너명이 꼭 workspace여야 함, 내부 포트가 꼭 8081이어야 함
           predicates:
             - Path=/workspace/**
 #token:
