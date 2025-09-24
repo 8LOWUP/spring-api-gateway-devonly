@@ -19,11 +19,11 @@ spring:
     swagger-ui:
       urls:
         - name: member-service
-          url: /member/swagger-ui/index.html
+          url: /member/v3/api-docs
         - name: mcp-service
-          url: /mcp/swagger-ui/index.html
+          url: /mcp/v3/api-docs
         - name: workspace-service
-          url: /workspace/swagger-ui/index.html
+          url: /workspace/v3/api-docs
 
   cloud:
     gateway:
