@@ -9,6 +9,13 @@ on:
       tag:
         required: true
         type: string
+    secrets:
+      SSH_PRIVATE_KEY:
+        required: true
+      KCR_HOST:
+        required: true
+      EC2_HOST:
+        required: true
 
 jobs:
   deploy:
@@ -23,12 +30,17 @@ jobs:
 
       - name: Deploy to Dev Server
         run: |
-          echo "Deploying $SERVICE:$TAG"
+          SERVICE=${{ inputs.service }}
+          TAG=${{ inputs.tag }}
+          IMAGE=${{ secrets.KCR_HOST }}/mcp-hub-backend-dev/$SERVICE:$TAG
+
+          echo "Re-deploying $SERVICE:$TAG (clean run)"
 
           ssh -o StrictHostKeyChecking=no ubuntu@${{ secrets.EC2_HOST }} "
             SERVICE=${{ inputs.service }} &&
             TAG=${{ inputs.tag }} &&
             IMAGE=${{ secrets.KCR_HOST }}/mcp-hub-backend-dev/\$SERVICE:\$TAG &&
+          
             cd /app/compose &&
             KCR_HOST=${{ secrets.KCR_HOST }} \
             docker-compose --env-file docker-compose.dev.env pull \$SERVICE &&
@@ -36,3 +48,4 @@ jobs:
             docker-compose --env-file docker-compose.dev.env up -d --no-deps \$SERVICE &&
             docker image prune -f
           "
+      
