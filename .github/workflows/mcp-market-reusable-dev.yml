@@ -42,9 +42,8 @@ jobs:
             IMAGE=${{ secrets.KCR_HOST }}/mcp-hub-backend-dev/\$SERVICE:\$TAG &&
           
             cd /app/compose &&
-            KCR_HOST=${{ secrets.KCR_HOST }} \
+            docker compose --env-file docker-compose.dev.env down \$SERVICE &&
             docker compose --env-file docker-compose.dev.env pull \$SERVICE &&
-            KCR_HOST=${{ secrets.KCR_HOST }} \
             docker compose --env-file docker-compose.dev.env up -d --no-deps \$SERVICE &&
             docker image prune -a -f
           "
