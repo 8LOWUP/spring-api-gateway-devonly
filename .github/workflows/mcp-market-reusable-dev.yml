@@ -35,4 +35,5 @@ jobs:
             docker-compose --env-file docker-compose.dev.env pull \$SERVICE &&
             KCR_HOST=${{ secrets.KCR_HOST }} \
             docker-compose --env-file docker-compose.dev.env up -d --no-deps \$SERVICE
+            docker image prune -f
           "
