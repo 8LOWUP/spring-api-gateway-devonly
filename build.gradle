@@ -35,6 +35,10 @@ dependencies {
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
 
+	// 스웨거 사용
+	implementation 'org.springdoc:springdoc-openapi-starter-webflux-ui:2.2.0'
+	implementation group: 'org.springdoc', name: 'springdoc-openapi-starter-webmvc-ui', version: '2.1.0'
+
 	// Spring Cloud Bootstrap
 	implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap'
 
