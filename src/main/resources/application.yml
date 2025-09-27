@@ -1,6 +1,15 @@
 server:
   port: 8000
 
+springdoc:
+  api-docs:
+    enabled: false
+  swagger-ui:
+    enabled: true
+    path: /swagger-ui.html
+    url: /v3/api-docs/aggregate
+
+
 spring:
   config:
     activate:
@@ -24,15 +33,6 @@ spring:
 #          url: /mcp/v3/api-docs
 #        - name: workspace-service
 #          url: /workspace/v3/api-docs
-  springdoc:
-    api-docs:
-      enabled: false
-    swagger-ui:
-      enabled: true
-      path: /swagger-ui.html
-      url: /v3/api-docs/aggregate   # Gateway Aggregator Controller가 제공하는 문서
-
-
   cloud:
     gateway:
       globalcors:
