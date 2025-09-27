@@ -15,15 +15,23 @@ spring:
 #    listener:
 #      simple:
 #        prefetch: 5
+#  springdoc:
+#    swagger-ui:
+#      urls:
+#        - name: member-service
+#          url: /member/v3/api-docs
+#        - name: mcp-service
+#          url: /mcp/v3/api-docs
+#        - name: workspace-service
+#          url: /workspace/v3/api-docs
   springdoc:
+    api-docs:
+      enabled: true
     swagger-ui:
-      urls:
-        - name: member-service
-          url: /member/v3/api-docs
-        - name: mcp-service
-          url: /mcp/v3/api-docs
-        - name: workspace-service
-          url: /workspace/v3/api-docs
+      enabled: true
+      path: /swagger-ui.html
+      url: /v3/api-docs   # Gateway Aggregator Controller가 제공하는 문서
+
 
   cloud:
     gateway:
