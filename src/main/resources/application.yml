@@ -26,11 +26,11 @@ spring:
 #          url: /workspace/v3/api-docs
   springdoc:
     api-docs:
-      enabled: true
+      enabled: false
     swagger-ui:
       enabled: true
       path: /swagger-ui.html
-      url: /v3/api-docs   # Gateway Aggregator Controller가 제공하는 문서
+      url: /v3/api-docs/aggregate   # Gateway Aggregator Controller가 제공하는 문서
 
 
   cloud:

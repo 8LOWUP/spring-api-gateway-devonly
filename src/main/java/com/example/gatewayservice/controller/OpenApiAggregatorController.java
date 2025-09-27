@@ -19,7 +19,7 @@ public class OpenApiAggregatorController {
 
     private final WebClient webClient = WebClient.builder().build();
 
-    @GetMapping("/v3/api-docs")
+    @GetMapping("/v3/api-docs/aggregate")
     public Mono<Map<String, Object>> aggregate() {
         Mono<Map<String, Object>> memberDocs = fetchDocs("http://mcp-hub-member:8080/v3/api-docs");
         Mono<Map<String, Object>> mcpDocs = fetchDocs("http://mcp-hub-mcp:8080/v3/api-docs");
