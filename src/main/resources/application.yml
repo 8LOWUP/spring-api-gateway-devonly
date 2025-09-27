@@ -56,22 +56,17 @@ spring:
           uri: http://mcp-hub-member:8080 # 컨테이너명이 꼭 member여야 함, 내부 포트가 꼭 8081이어야 함
           predicates:
             - Path=/member/**
-          filters:
-            - StripPrefix=1
 
         - id: mcp-service
           uri: http://mcp-hub-mcp:8080 # 컨테이너명이 꼭 mcp여야 함, 내부 포트가 꼭 8081이어야 함
           predicates:
             - Path=/mcp/**
-          filters:
-            - StripPrefix=1
 
         - id: workspace-service
           uri: http://mcp-hub-workspace:8080 # 컨테이너명이 꼭 workspace여야 함, 내부 포트가 꼭 8081이어야 함
           predicates:
             - Path=/workspace/**
-          filters:
-            - StripPrefix=1
+
 #token:
 #  secret: user_token
 
