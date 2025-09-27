@@ -36,7 +36,7 @@ dependencies {
 	annotationProcessor 'org.projectlombok:lombok'
 
 	// Swagger/OpenAPI (WebFlux 전용)
-	implementation 'org.springdoc:springdoc-openapi-starter-webflux-ui:2.3.0'
+	implementation 'org.springdoc:springdoc-openapi-starter-webflux-ui:2.5.0'
 
 	// Spring Cloud Bootstrap
 	implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap'
