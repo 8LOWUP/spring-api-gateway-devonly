@@ -1,5 +1,6 @@
 package com.example.gatewayservice.controller;
 
+import io.swagger.v3.oas.annotations.Hidden;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,6 +12,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+@Hidden
 @RestController
 @RequiredArgsConstructor
 public class OpenApiAggregatorController {
@@ -25,25 +27,32 @@ public class OpenApiAggregatorController {
 
         return Mono.zip(memberDocs, mcpDocs, workspaceDocs)
                 .map(tuple -> {
-                    Map<String, Object> merged = new HashMap<>(tuple.getT1());
+                    Map<String, Object> base = new HashMap<>(tuple.getT1());
+
+                    // info 수정 (원하는 대로)
+                    Map<String, Object> info = new HashMap<>();
+                    info.put("title", "API Gateway Aggregated Docs");
+                    info.put("version", "1.0");
+                    base.put("info", info);
 
                     // paths 병합
                     Map<String, Object> paths = new LinkedHashMap<>();
                     paths.putAll(getMap(tuple.getT1(), "paths"));
                     paths.putAll(getMap(tuple.getT2(), "paths"));
                     paths.putAll(getMap(tuple.getT3(), "paths"));
-                    merged.put("paths", paths);
+                    base.put("paths", paths);
 
                     // components 병합
                     Map<String, Object> components = new LinkedHashMap<>();
                     components.putAll(getMap(tuple.getT1(), "components"));
                     components.putAll(getMap(tuple.getT2(), "components"));
                     components.putAll(getMap(tuple.getT3(), "components"));
-                    merged.put("components", components);
+                    base.put("components", components);
 
-                    return merged;
+                    return base;
                 });
     }
+
 
     private Mono<Map<String, Object>> fetchDocs(String url) {
         return webClient.get()
