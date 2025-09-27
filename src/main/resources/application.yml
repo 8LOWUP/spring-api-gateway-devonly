@@ -3,7 +3,7 @@ server:
 
 springdoc:
   api-docs:
-    enabled: false
+    enabled: true
   swagger-ui:
     enabled: true
     url: /v3/api-docs/aggregate
