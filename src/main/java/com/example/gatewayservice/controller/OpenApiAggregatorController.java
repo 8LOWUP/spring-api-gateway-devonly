@@ -10,6 +10,7 @@ import reactor.core.publisher.Mono;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 @Hidden
@@ -48,6 +49,13 @@ public class OpenApiAggregatorController {
                     components.putAll(getMap(tuple.getT2(), "components"));
                     components.putAll(getMap(tuple.getT3(), "components"));
                     base.put("components", components);
+
+                    // Swagger UI가 Gateway 경유해서 요청하도록 servers 설정 추가
+                    base.put("servers", List.of(
+                            Map.of("url", "/members", "description", "Member Service"),
+                            Map.of("url", "/mcps", "description", "MCP Service"),
+                            Map.of("url", "/workspaces", "description", "Workspace Service")
+                    ));
 
                     return base;
                 });
