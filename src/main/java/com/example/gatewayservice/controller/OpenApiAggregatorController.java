@@ -52,9 +52,7 @@ public class OpenApiAggregatorController {
 
                     // Swagger UI가 Gateway 경유해서 요청하도록 servers 설정 추가
                     base.put("servers", List.of(
-                            Map.of("url", "/members", "description", "Member Service"),
-                            Map.of("url", "/mcps", "description", "MCP Service"),
-                            Map.of("url", "/workspaces", "description", "Workspace Service")
+                            Map.of("url", "/", "description", "MCP hub Service")
                     ));
 
                     return base;
