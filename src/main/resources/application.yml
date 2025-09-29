@@ -60,7 +60,7 @@ spring:
         - id: mcp-service
           uri: http://mcp-hub-mcp:8080 # 컨테이너명이 꼭 mcp여야 함, 내부 포트가 꼭 8081이어야 함
           predicates:
-            - Path=/mcp/**
+            - Path=/mcps/**
 
         - id: workspace-service
           uri: http://mcp-hub-workspace:8080 # 컨테이너명이 꼭 workspace여야 함, 내부 포트가 꼭 8081이어야 함
