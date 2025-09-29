@@ -34,17 +34,6 @@ spring:
 #          url: /workspace/v3/api-docs
   cloud:
     gateway:
-      globalcors:
-        add-to-simple-url-handler-mapping: true
-        corsConfigurations:
-          '[/**]':
-            allowedOrigins: "*"
-            allowedMethods:
-              - GET
-              - POST
-              - PUT
-              - DELETE
-              - OPTIONS
       default-filters:
         - name: GlobalFilter
           args:

@@ -9,8 +9,8 @@ public class CorsConfig implements WebFluxConfigurer {
 
     @Override
     public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**") // 모든 엔드포인트
-                .allowedOrigins("*") // 허용할 Origin
+        registry.addMapping("/**")
+                .allowedOriginPatterns("*") // 와일드카드 허용 (allowedOrigins 대신!)
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                 .allowedHeaders("*")
                 .allowCredentials(true);
