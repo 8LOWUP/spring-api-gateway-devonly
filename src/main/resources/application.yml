@@ -56,6 +56,14 @@ spring:
           predicates:
             - Path=/workspaces/**
 
+      globalcors:
+        corsConfigurations:
+          '[/**]':   # 모든 경로에 적용
+            allowedOrigins: "http://localhost:3000"
+            allowedMethods: "*"
+            allowedHeaders: "*"
+            allowCredentials: true
+
 #token:
 #  secret: user_token
 
