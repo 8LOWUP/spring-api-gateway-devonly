@@ -13,7 +13,7 @@ services:
     container_name: mcp-hub-member
     image: ${KCR_HOST}/mcp-hub-backend-dev/mcp-hub-member:latest
     ports:
-      - 811:8081
+      - 811:8080
     environment:
       - SPRING_PROFILES_ACTIVE=dev
     networks:
@@ -23,7 +23,7 @@ services:
     container_name: mcp-hub-workspace
     image: ${KCR_HOST}/mcp-hub-backend-dev/mcp-hub-workspace:latest
     ports:
-      - 812:8081
+      - 812:8080
     environment:
       - SPRING_PROFILES_ACTIVE=dev
     networks:
@@ -33,7 +33,7 @@ services:
     container_name: mcp-hub-mcp
     image: ${KCR_HOST}/mcp-hub-backend-dev/mcp-hub-mcp:latest
     ports:
-      - 813:8081
+      - 813:8080
     environment:
       - SPRING_PROFILES_ACTIVE=dev
     networks:
@@ -92,8 +92,109 @@ services:
       - mm_dev_network
     restart: always
 
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.4.0
+    container_name: zookeeper
+    ports:
+      - 2181:2181
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+    networks:
+      - mm_dev_network
+
+  kafka:
+    image: confluentinc/cp-kafka:7.4.0
+    container_name: kafka
+    ports:
+      - "9092:9092"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+    depends_on:
+      - zookeeper
+    networks:
+      - mm_dev_network
+
+  kafka-exporter:
+    container_name: kafka-exporter
+    image: danielqsj/kafka-exporter:latest
+    ports:
+      - 9308:9308
+    command:
+      - '--kafka.server=kafka:9092'
+    networks:
+      mm_local_network:
+        aliases:
+          - kafka-exporter
+    restart: always
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    volumes:
+      - /home/ubuntu/monitoring/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
+    ports:
+      - "9090:9090"
+    restart: unless-stopped
+    networks:
+      - mm_dev_network
+
+  loki:
+    image: grafana/loki:2.9.0
+    container_name: loki
+    command: -config.file=/etc/loki/local-config.yaml
+    volumes:
+      - /home/ubuntu/monitoring/loki/loki.yml:/etc/loki/local-config.yaml
+      - loki_data:/loki
+    ports:
+      - "3100:3100"
+    restart: unless-stopped
+    networks:
+      - mm_dev_network
+
+  promtail:
+    image: grafana/promtail:2.9.0
+    container_name: promtail
+    command: -config.file=/etc/promtail/config.yml
+    volumes:
+      - /home/ubuntu/monitoring/promtail/promtail.yml:/etc/promtail/config.yml
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    restart: unless-stopped
+    networks:
+      - mm_dev_network
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    volumes:
+      - grafana_data:/var/lib/grafana
+    ports:
+      - "3000:3000"
+    depends_on:
+      - prometheus
+      - loki
+    restart: unless-stopped
+    networks:
+      - mm_dev_network
+
+
 networks:
   mm_dev_network:
     name: mm_dev_network
     driver: bridge
     internal: false
+
+volumes:
+  prometheus_data:
+  loki_data:
+  grafana_data:
