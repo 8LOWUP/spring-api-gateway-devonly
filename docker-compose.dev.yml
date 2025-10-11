@@ -187,6 +187,55 @@ services:
     networks:
       - mm_dev_network
 
+  connect:
+    # image: my-registry/kafka-connect:2.7.0   # DEPRECATED: 현재는 Dockerfile 을 통해 컨테이너 생성하도록 되어 있음
+    build:
+      context: .          # 현재 디렉토리의 Dockerfile 사용
+      dockerfile: Dockerfile
+    container_name: kafka-connect
+    ports:
+      - 8083:8083
+    env_file:
+      - ./local.env
+    environment:
+      CONNECT_BOOTSTRAP_SERVERS: ${KAFKA_BOOTSTRAP_SERVERS} # todo 배포용 컴포즈 만들 때는 수정 필요
+      CONNECT_GROUP_ID: cg-my-connector
+      CONNECT_CONFIG_STORAGE_TOPIC: kafka-connect-configs
+      CONNECT_OFFSET_STORAGE_TOPIC: kafka-connect-offsets
+      CONNECT_STATUS_STORAGE_TOPIC: kafka-connect-statuses
+      CONNECT_KEY_CONVERTER: org.apache.kafka.connect.json.JsonConverter
+      CONNECT_VALUE_CONVERTER: org.apache.kafka.connect.json.JsonConverter
+      CONNECT_PLUGIN_PATH: /opt/kafka-plugins,/usr/share/confluent-hub-components
+      CONNECT_REST_ADVERTISED_HOST_NAME: connect
+      CONNECT_CONFIG_STORAGE_REPLICATION_FACTOR: 1
+      CONNECT_OFFSET_STORAGE_REPLICATION_FACTOR: 1
+      CONNECT_STATUS_STORAGE_REPLICATION_FACTOR: 1
+      ENABLE_DEBEZIUM_SCRIPTING: "true"
+
+      # (선택) register 스크립트용 변수
+      CONNECT_URL: http://localhost:8083
+      DEV_ENV_PATH: /etc/local.env
+
+    depends_on:
+      - kafka
+      - mysql
+      - mongodb
+    volumes:
+      # Source Connector
+      - ./configs/connector-mcp-config.json:/etc/kafka-connect/connector-mcp-config.json
+      - ./configs/connector-mcp-mcp_url-config.json:/etc/kafka-connect/connector-mcp-mcp_url-config.json
+      - ./configs/connector-member-config.json:/etc/kafka-connect/connector-member-config.json
+      # Mongo Sink Connector
+      - ./configs/mongo-sink-mcpUrl-config.json:/etc/kafka-connect/mongo-sink-mcpUrl-config.json
+      - ./configs/mongo-sink-config.json:/etc/kafka-connect/mongo-sink-config.json
+      - ./configs/redis-sink-config.json:/etc/kafka-connect/redis-sink-config.json
+      - ./configs/elasticsearch-sink-config.json:/etc/kafka-connect/elasticsearch-sink-config.json
+      - ./local.env:/etc/local.env:ro
+    networks:
+      mm_local_network:
+        ipv4_address: ${NETWORK_KAFKA_CONNECT_IP}
+
+
 
 networks:
   mm_dev_network:
