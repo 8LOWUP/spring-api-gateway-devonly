@@ -194,7 +194,7 @@ services:
     ports:
       - 8083:8083
     env_file:
-      - ./local.env
+      - ./docker-compose.dev.env
     environment:
       CONNECT_BOOTSTRAP_SERVERS: ${KAFKA_BOOTSTRAP_SERVERS} # todo 배포용 컴포즈 만들 때는 수정 필요
       CONNECT_GROUP_ID: cg-my-connector
@@ -228,9 +228,9 @@ services:
       - ./configs/mongo-sink-config.json:/etc/kafka-connect/mongo-sink-config.json
       - ./configs/redis-sink-config.json:/etc/kafka-connect/redis-sink-config.json
       - ./configs/elasticsearch-sink-config.json:/etc/kafka-connect/elasticsearch-sink-config.json
-      - ./local.env:/etc/local.env:ro
+      - ./docker-compose.dev.env:/etc/local.env:ro
     networks:
-      mm_local_network:
+      mm_dev_network:
         ipv4_address: ${NETWORK_KAFKA_CONNECT_IP}
 
 
