@@ -189,9 +189,7 @@ services:
 
   connect:
     # image: my-registry/kafka-connect:2.7.0   # DEPRECATED: 현재는 Dockerfile 을 통해 컨테이너 생성하도록 되어 있음
-    build:
-      context: .          # 현재 디렉토리의 Dockerfile 사용
-      dockerfile: Dockerfile
+    image: ${KCR_HOST}/mcp-hub-backend-dev/connect:latest
     container_name: kafka-connect
     ports:
       - 8083:8083
