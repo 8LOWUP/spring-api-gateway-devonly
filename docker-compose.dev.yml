@@ -230,8 +230,7 @@ services:
       - ./configs/elasticsearch-sink-config.json:/etc/kafka-connect/elasticsearch-sink-config.json
       - ./docker-compose.dev.env:/etc/local.env:ro
     networks:
-      mm_dev_network:
-        ipv4_address: ${NETWORK_KAFKA_CONNECT_IP}
+      - mm_dev_network
 
 
 
