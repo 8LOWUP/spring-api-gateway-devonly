@@ -36,6 +36,8 @@ services:
       - 813:8080
     environment:
       - SPRING_PROFILES_ACTIVE=dev
+    volumes: #해당 디렉토리 권한 필요
+      - /opt/mcphub/images:/opt/mcphub/images
     networks:
       - mm_dev_network
 
