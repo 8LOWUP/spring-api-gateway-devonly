@@ -34,6 +34,9 @@ spring:
 #          url: /workspace/v3/api-docs
   cloud:
     gateway:
+      httpclient:
+        connect-timeout: 180000       # 연결 타임아웃 (밀리초 단위 → 180초)
+        response-timeout: 180s        # 응답 타임아웃 (초 단위 → 180초)
       default-filters:
         - name: GlobalFilter
           args:
