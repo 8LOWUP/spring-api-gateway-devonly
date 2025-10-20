@@ -7,7 +7,8 @@ services:
     ports:
       - 80:8000
     networks:
-      - mm_dev_network
+      - mm_app_network
+      - mm_external_network
     restart: unless-stopped
 
   mcp-hub-member:
@@ -22,7 +23,7 @@ services:
       - mysql
       - redis
     networks:
-      - mm_dev_network
+      - mm_app_network
 
   mcp-hub-workspace:
     container_name: mcp-hub-workspace
@@ -36,7 +37,7 @@ services:
       - mongodb
       - redis
     networks:
-      - mm_dev_network
+      - mm_app_network
 
   mcp-hub-mcp:
     container_name: mcp-hub-mcp
@@ -52,7 +53,7 @@ services:
       - mysql
       - redis
     networks:
-      - mm_dev_network
+      - mm_app_network
 
   redis:
     container_name: redis
@@ -62,7 +63,8 @@ services:
     volumes:
       - redis_data:/data
     networks:
-      - mm_dev_network
+      - mm_data_network
+      - mm_app_network
 
   mysql:
     container_name: mysql
@@ -78,7 +80,8 @@ services:
     volumes:
       - mysql_data:/var/lib/mysql
     networks:
-      - mm_dev_network
+      - mm_data_network
+      - mm_app_network
 
 
   mongodb:
@@ -93,7 +96,8 @@ services:
     volumes:
       - mongo_data:/data/db
     networks:
-      - mm_dev_network
+      - mm_data_network
+      - mm_app_network
     restart: always
 
   elasticsearch:
@@ -111,7 +115,8 @@ services:
     ports:
       - 9200:9200
     networks:
-      - mm_dev_network
+      - mm_data_network
+      - mm_app_network
     restart: always
 
   zookeeper:
@@ -122,7 +127,7 @@ services:
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
     networks:
-      - mm_dev_network
+      - mm_data_network
 
   kafka:
     image: confluentinc/cp-kafka:7.4.0
@@ -140,7 +145,7 @@ services:
     depends_on:
       - zookeeper
     networks:
-      - mm_dev_network
+      - mm_data_network
 
 
   kafka-exporter:
@@ -151,9 +156,8 @@ services:
     command:
       - '--kafka.server=kafka:9092'
     networks:
-      mm_dev_network:
-        aliases:
-          - kafka-exporter
+      - mm_monitoring_network
+      - mm_data_network
     restart: always
 
   prometheus:
@@ -166,7 +170,8 @@ services:
       - "9090:9090"
     restart: unless-stopped
     networks:
-      - mm_dev_network
+      - mm_monitoring_network
+      - mm_app_network
 
   loki:
     image: grafana/loki:2.9.0
@@ -179,7 +184,8 @@ services:
       - "3100:3100"
     restart: unless-stopped
     networks:
-      - mm_dev_network
+      - mm_monitoring_network
+      - mm_app_network
 
   promtail:
     image: grafana/promtail:2.9.0
@@ -191,7 +197,8 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock:ro
     restart: unless-stopped
     networks:
-      - mm_dev_network
+      - mm_monitoring_network
+      - mm_app_network
 
   # 트레이스 저장 용도
   tempo:
@@ -206,7 +213,8 @@ services:
       - tempo_data:/var/tempo
     restart: unless-stopped
     networks:
-      - mm_dev_network
+      - mm_monitoring_network
+      - mm_app_network
 
   grafana:
     image: grafana/grafana:latest
@@ -223,7 +231,8 @@ services:
       - loki
     restart: unless-stopped
     networks:
-      - mm_dev_network
+      - mm_external_network
+      - mm_monitoring_network
 
   connect:
     # image: my-registry/kafka-connect:2.7.0   # DEPRECATED: 현재는 Dockerfile 을 통해 컨테이너 생성하도록 되어 있음
@@ -268,13 +277,22 @@ services:
       - ./configs/elasticsearch-sink-config.json:/etc/kafka-connect/elasticsearch-sink-config.json
       - ./docker-compose.dev.env:/etc/local.env:ro
     networks:
-      - mm_dev_network
+      - mm_data_network
+      - mm_app_network
 
 networks:
-  mm_dev_network:
-    name: mm_dev_network
+  mm_app_network: ## 내부 서비스 간 통신 (grpc 통신은 + gateway 연결)
+    driver: bridge
+    internal: true
+  mm_monitoring_network: # 프로메테우스, 그라파나, 로키 등 모니터링 계층
+    driver: bridge
+    internal: true
+  mm_external_network: # 외부 공개용 네트워크 그라파나와 게이웨이가 사용
     driver: bridge
     internal: false
+  mm_data_network: # 데이터베이스 전용 네트워크(CDC)
+    driver: bridge
+    internal: true
 
 volumes:
   prometheus_data:
