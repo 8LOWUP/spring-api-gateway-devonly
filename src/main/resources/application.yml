@@ -62,7 +62,7 @@ spring:
       globalcors:
         corsConfigurations:
           '[/**]':   # 모든 경로에 적용
-            allowedOrigins: "https://8lowup-mcp-hub.vercel.app"
+            allowedOrigins: "http://localhost:3000"
             allowedMethods: "*"
             allowedHeaders: "*"
             allowCredentials: true
